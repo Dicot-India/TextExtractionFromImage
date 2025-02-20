@@ -52,7 +52,7 @@ export default function Home() {
     let formData = new FormData();
     formData.append("image", file);
 
-    fetch("http://10.17.12.14:5000/upload", {
+    fetch("http://15.207.232.194:9999/upload", {
       method: "POST",
       body: formData,
     })
@@ -159,7 +159,7 @@ export default function Home() {
       totalUnits: unitsPerGroup * numGroups
     }
 
-    const response = await fetch('http://10.17.12.14:5000/submit_details', {
+    const response = await fetch('http://15.207.232.194:9999/submit_details', {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(reqBody)
