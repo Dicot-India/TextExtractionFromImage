@@ -8,7 +8,7 @@ from datetime import datetime
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "https://main.dbo2fl82xh59y.amplifyapp.com"}})
 
 UPLOAD_FOLDER = "uploads"
 DATA_FILE = "data.json"

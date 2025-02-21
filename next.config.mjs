@@ -4,7 +4,7 @@ const nextConfig = {
         return [
             {
                 source: "/api/:path*",
-                destination: "http://15.207.232.194:5000/:path*", // Replace with actual backend URL
+                destination: "http://15.207.232.194:9999/:path*", // Replace with actual backend URL
             },
         ];
     },
