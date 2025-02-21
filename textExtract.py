@@ -22,7 +22,7 @@ def load_data():
         with open(DATA_FILE, "r") as file:
             return json.load(file)
     return []
-
+    
 
 def save_data(new_entry):
     """Save new entry to JSON file."""
