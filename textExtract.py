@@ -8,7 +8,7 @@ from datetime import datetime
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "https://main.dbo2fl82xh59y.amplifyapp.com"}})
+CORS(app)
 
 UPLOAD_FOLDER = "uploads"
 DATA_FILE = "data.json"
@@ -22,7 +22,7 @@ def load_data():
         with open(DATA_FILE, "r") as file:
             return json.load(file)
     return []
-    
+
 
 def save_data(new_entry):
     """Save new entry to JSON file."""
