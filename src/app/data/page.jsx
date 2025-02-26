@@ -5,7 +5,7 @@ const TableDisplay = () => {
     const [data, setData] = useState([]);
 
     useEffect(() => {
-        fetch("/api/get_all_data") // Fetch from Flask
+        fetch("/api/getalldata") // Fetch from Flask
             .then((res) => res.json())
             .then((jsonData) => {
                 // Convert timestamp to IST
