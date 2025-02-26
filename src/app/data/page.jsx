@@ -5,7 +5,14 @@ const TableDisplay = () => {
     const [data, setData] = useState([]);
 
     useEffect(() => {
-        fetch("/api/getalldata") // Fetch from Flask
+        fetch("/api/getalldata",
+            {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }
+        ) // Fetch from Flask
             .then((res) => res.json())
             .then((jsonData) => {
                 // Convert timestamp to IST
@@ -65,7 +72,7 @@ const TableDisplay = () => {
 
     return (
         <div style={{ padding: "20px", textAlign: "center" }}>
-            <h2 style={{ fontSize: "24px", marginBottom: "15px"}}>
+            <h2 style={{ fontSize: "24px", marginBottom: "15px" }}>
                 Submitted Details
             </h2>
 
