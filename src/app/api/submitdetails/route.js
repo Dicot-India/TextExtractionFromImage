@@ -1,5 +1,5 @@
 export async function POST(request, response) {
-    const backendUrl = `http://15.207.232.194:9999${request.nextUrl.pathname.replace('/api/extracttext', '/extract_text')}`;
+    const backendUrl = `http://15.207.232.194:9999${request.nextUrl.pathname.replace('/api/submitdetails', '/submit_details')}`;
 
     try {
 
