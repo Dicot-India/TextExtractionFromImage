@@ -1,4 +1,4 @@
-export async function POST(request, response) {
+export async function GET(request, response) {
     const backendUrl = `http://15.207.232.194:9999${request.nextUrl.pathname.replace('/api/getalldata', '/get_all_data')}`;
 
     try {
