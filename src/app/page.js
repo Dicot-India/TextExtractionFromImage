@@ -52,7 +52,7 @@ export default function Home() {
     let formData = new FormData();
     formData.append("image", file);
 
-    fetch("http://15.207.232.194:9999/upload", {
+    fetch("/upload", {
       method: "POST",
       body: formData,
     })
@@ -133,7 +133,7 @@ export default function Home() {
       return;
     }
 
-    fetch("http://10.17.12.14:5000/extract_text", {
+    fetch("/extract_text", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ filename, coords, isMobile: window.innerWidth < 768 ? true : false }),
