@@ -52,7 +52,7 @@ export default function Home() {
     let formData = new FormData();
     formData.append("image", file);
 
-    fetch("/api/upload", {
+    fetch("/api/proxy/upload", {
       method: "POST",
       body: formData,
     })
