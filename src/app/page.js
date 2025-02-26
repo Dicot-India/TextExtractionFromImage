@@ -52,7 +52,7 @@ export default function Home() {
     let formData = new FormData();
     formData.append("image", file);
 
-    fetch("/api/proxy/upload", {
+    fetch("/api/upload", {
       method: "POST",
       body: formData,
     })
@@ -133,7 +133,7 @@ export default function Home() {
       return;
     }
 
-    fetch("/api/extract_text", {
+    fetch("/api/extracttext", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ filename, coords, isMobile: window.innerWidth < 768 ? true : false }),
@@ -159,7 +159,7 @@ export default function Home() {
       totalUnits: unitsPerGroup * numGroups
     }
 
-    const response = await fetch('http://15.207.232.194:9999/submit_details', {
+    const response = await fetch('/api/submitdetails', {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(reqBody)
@@ -268,9 +268,9 @@ export default function Home() {
           <div className="details-container" style={{ width: `${window.innerWidth < 768 ? '90%' : "50%"}` }}>
             <h2>Enter Details</h2>
             <label>Number of Units per Group:</label>
-            <input type="number" onChange={(e) => setUnitsPerGroup(e.target.value)} defaultValue={1}/>
+            <input type="number" onChange={(e) => setUnitsPerGroup(e.target.value)} defaultValue={1} />
             <label>Number of Groups:</label>
-            <input type="number" onChange={(e) => setNumGroups(e.target.value)} defaultValue={1}/>
+            <input type="number" onChange={(e) => setNumGroups(e.target.value)} defaultValue={1} />
             <label>Measurement Unit:</label>
             <select onChange={(e) => setMeasurementUnit(e.target.value)}>
               <option value="KG">KG</option>
