@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { useReactToPrint } from "react-to-print";
+import { parse } from "csv-parse/browser/esm";
 
 export default function Home() {
   const [image, setImage] = useState(null);
@@ -14,16 +15,21 @@ export default function Home() {
   const [scale, setScale] = useState({ x: 1, y: 1 });
   const [partID, setPartID] = useState("");
   const [isUniteGroup, setIsUnitGroup] = useState(false);
-  const [unitsPerGroup, setUnitsPerGroup] = useState();
-  const [numGroups, setNumGroups] = useState();
+  const [unitsPerGroup, setUnitsPerGroup] = useState(1);
+  const [numGroups, setNumGroups] = useState(1);
   const [measurementUnit, setMeasurementUnit] = useState("KG");
   const [location, setLocation] = useState();
   const [canvasSize, setCanvasSize] = useState({ width: 700, height: 500 });
   const [qrData, setQrData] = useState(null); // State to store QR code data
+  const [csvData, setCsvData] = useState([]);
   const contentRef = useRef();
 
   const CANVAS_WIDTH = 700;
   const CANVAS_HEIGHT = 500;
+
+
+
+  const storedIDs = Array.from({ length: 300 }, () => String(Math.floor(10_000_000_000_000 + Math.random() * 9_000_000_000_000)));
 
   useEffect(() => {
     const updateCanvasSize = () => {
@@ -40,9 +46,61 @@ export default function Home() {
     };
   }, []);
 
+
+  useEffect(() => {
+    const loadCSV = async () => {
+      try {
+        const response = await fetch("/codes.csv");
+        const text = await response.text();
+
+        parse(text, { columns: true, trim: true }, (err, records) => {
+          if (err) {
+            console.error("Error parsing CSV:", err);
+            return;
+          }
+
+          const values = records.map(record => Object.values(record)[0]);
+          setCsvData(values);
+        });
+      } catch (error) {
+        console.error("Error loading CSV:", error);
+      }
+    };
+
+    loadCSV();
+  }, []);
+
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
+    const fileExtension = file.name.split('.')[1];
+
     if (!file) return;
+    if (fileExtension === "csv") {
+
+      const reader = new FileReader();
+      reader.onload = async ({ target }) => {
+        if (!target) return;
+        const text = target.result;
+        // Parse CSV data
+        parse(text, { columns: true, trim: true }, (err, records) => {
+
+          if (err) {
+            console.error("Error parsing CSV:", err);
+            return;
+          }
+          const values = [];
+          records.forEach((record) => {
+            console.log(record)
+            values.push(Object.values(record)[0]);
+
+          })
+
+          setCsvData(values);
+        });
+      };
+      reader.readAsText(file);
+    }
+
 
     const imgURL = URL.createObjectURL(file);
     setImage(imgURL);
@@ -140,8 +198,20 @@ export default function Home() {
     })
       .then((response) => response.json())
       .then((data) => {
-        setPartID(data?.part_id);
-        setIsUnitGroup(true);
+
+        if (data?.part_id) {
+
+
+          console.log("csvData:", csvData);
+          console.log("data?.part_id:", data?.part_id);
+          const foundPartID = csvData.find((id) => id === data?.part_id);
+          console.log("foundPartID:", foundPartID);
+          if (foundPartID) {
+            setPartID(data?.part_id);
+          }
+
+          setIsUnitGroup(true);
+        }
       })
       .catch((error) => console.error("Error:", error));
 
@@ -184,6 +254,7 @@ export default function Home() {
             padding: 5px;
             border: 1px solid #ddd;
             border-radius: 5px;
+            max-width: 75%;
           }
           .canvas-container {
             position: relative;
@@ -244,7 +315,11 @@ export default function Home() {
 
       <div className="container">
         <h1>Upload an Image and Select Text</h1>
-        <input type="file" onChange={handleImageUpload} className="file-input" />
+
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }} >
+          <p>Select Image:</p>
+          <input type="file" onChange={handleImageUpload} className="file-input" />
+        </div>
         <div className="canvas-container">
           <canvas ref={canvasRef} width={CANVAS_WIDTH} height={CANVAS_HEIGHT} />
           <canvas
@@ -264,30 +339,33 @@ export default function Home() {
           Extract Text
         </button>
 
-        {isUniteGroup && (
-          <div className="details-container" style={{ width: `${window.innerWidth < 768 ? '90%' : "50%"}` }}>
-            <h2>Enter Details</h2>
-            <label>Number of Units per Group:</label>
-            <input type="number" onChange={(e) => setUnitsPerGroup(e.target.value)} defaultValue={1} />
-            <label>Number of Groups:</label>
-            <input type="number" onChange={(e) => setNumGroups(e.target.value)} defaultValue={1} />
-            <label>Measurement Unit:</label>
-            <select onChange={(e) => setMeasurementUnit(e.target.value)}>
-              <option value="KG">KG</option>
-              <option value="L">L</option>
-              <option value="PCS">PCS</option>
-            </select>
-            <label>Location:</label>
-            <input type="text" onChange={(e) => setLocation(e.target.value)} />
-            <button className="btn" onClick={handleSubmit}>Submit</button>
-          </div>
+        {isUniteGroup && (<p style={{ fontSize: "1.5rem", color: `${partID ? "green" : "red"}`, margin: "1rem 0" }} >{partID ? `PartID Recognize : ${partID}` : `PartID Not Recognize : ${partID}`}</p>)}
+
+        {isUniteGroup && partID && (
+          <>
+            <div className="details-container" style={{ width: `${window.innerWidth < 768 ? '90%' : "50%"}` }}>
+              <h2>Enter Details</h2>
+              <label>Number of Units per Group:</label>
+              <input type="number" onChange={(e) => setUnitsPerGroup(e.target.value)} defaultValue={1} />
+              <label>Number of Groups:</label>
+              <input type="number" onChange={(e) => setNumGroups(e.target.value)} defaultValue={1} />
+              <label>Measurement Unit:</label>
+              <select onChange={(e) => setMeasurementUnit(e.target.value)}>
+                <option value="KG">KG</option>
+                <option value="L">L</option>
+                <option value="PCS">PCS</option>
+              </select>
+              <label>Location:</label>
+              <input type="text" onChange={(e) => setLocation(e.target.value)} />
+              <button className="btn" onClick={handleSubmit}>Submit</button>
+            </div>
+          </>
         )}
 
         {qrData && (
           <div style={{ marginTop: "20px", textAlign: "center" }}>
             <h2>QR Code:</h2>
             <div ref={contentRef} className="print-container">
-
               <QRCodeSVG value={qrData} size={200} />
             </div>
             <button onClick={() => handlePrint()}>Print QR Code</button>
