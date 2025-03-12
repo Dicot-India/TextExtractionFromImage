@@ -44,12 +44,13 @@ export default function QRCodeScanner() {
                 body: JSON.stringify(qrResult)
             });
             if (response.ok) {
-                console.log("Data submitted successfully");
+                alert("Data submitted successfully");
+                window.location.reload();
             } else {
-                console.error("Failed to submit data");
+                alert("Failed to submit data");
             }
         } catch (error) {
-            console.error("Error submitting data:", error);
+            alert("Error submitting data:", error);
         }
     };
 
