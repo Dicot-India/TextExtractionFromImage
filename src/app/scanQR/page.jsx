@@ -14,7 +14,13 @@ export default function QRCodeScanner() {
 
         scanner.render(
             (decodedText) => {
-                setQrResult(decodedText);
+                try {
+                    const jsonData = JSON.parse(decodedText);
+                    setQrResult(jsonData);
+                } catch (error) {
+                    console.error("Invalid JSON format", error);
+                    setQrResult({ error: "Invalid JSON data" });
+                }
                 scanner.clear();
             },
             (errorMessage) => {
@@ -34,8 +40,11 @@ export default function QRCodeScanner() {
             <h2 className="text-xl font-bold mb-4">Scan QR Code</h2>
             <div id="qr-reader" className="border-2 border-gray-300 rounded-lg p-2"></div>
             {qrResult && (
-                <div className="mt-4 p-2 bg-green-200 text-green-800 rounded-md">
-                    <strong>Scanned QR:</strong> {qrResult}
+                <div className="mt-4 p-4 bg-green-200 text-green-800 rounded-md w-full max-w-md">
+                    <strong>Scanned QR:</strong>
+                    <pre className="bg-gray-100 p-2 rounded-md overflow-x-auto text-sm">
+                        {JSON.stringify(qrResult, null, 2)}
+                    </pre>
                 </div>
             )}
         </div>
