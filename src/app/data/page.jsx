@@ -70,6 +70,27 @@ const TableDisplay = () => {
         URL.revokeObjectURL(url);
     };
 
+
+    const handleClearData = () => {
+        fetch("/api/cleardata",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }
+        ) // Fetch from Flask
+            .then((res) => res.json())
+            .then((jsonData) => {
+                if (jsonData?.status) {
+                    if (jsonData?.status === 200) {
+                        setData([]);
+                    }
+                }
+            })
+            .catch((err) => console.error("Error fetching data:", err));
+    }
+
     return (
         <div style={{ padding: "20px", textAlign: "center" }}>
             <h2 style={{ fontSize: "24px", marginBottom: "15px" }}>
@@ -77,9 +98,14 @@ const TableDisplay = () => {
             </h2>
 
             {/* Download CSV Button */}
-            <button onClick={downloadCSV} style={btnStyle}>
-                Download CSV
-            </button>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "1rem" }}>
+                <button onClick={downloadCSV} style={btnStyle} >
+                    Download CSV
+                </button>
+                <button style={btnStyle} onClick={handleClearData}>
+                    Clear Data
+                </button>
+            </div>
 
             <div style={{ overflow: "auto", marginTop: "15px" }}>
                 <table

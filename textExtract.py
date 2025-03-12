@@ -170,6 +170,15 @@ def submit_details():
 
     return jsonify({"message": "Data submitted successfully"}), 200
 
+@app.route("/clear_data", methods=["POST"])
+def clear_data():
+    """Clear all data from the JSON file."""
+    with open(DATA_FILE, "w") as file:
+        json.dump([], file, indent=4)  # Overwrite with an empty list
+
+    return jsonify({"message": "All data cleared successfully" , "status" : 200}), 200    
+
+
 @app.route("/get_all_data", methods=["GET"])
 def get_all_data():
     """Retrieve all stored JSON data."""

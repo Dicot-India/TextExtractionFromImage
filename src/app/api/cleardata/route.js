@@ -1,15 +1,17 @@
-export async function GET(request, response) {
-    const backendUrl = `http://15.207.232.194:9999${request.nextUrl.pathname.replace('/api/getalldata', '/get_all_data')}`;
+export async function POST(request, response) {
+    const backendUrl = `http://15.207.232.194:9999${request.nextUrl.pathname.replace('/api/cleardata', '/clear_data')}`;
+    // const backendUrl = "http://10.17.12.14:5000/clear_data"
 
-    // const backendUrl = "http://10.17.12.14:5000/get_all_data"
     try {
+
         const response = await fetch(backendUrl, {
-            method: "GET",
+            method: "POST",
             headers: {
                 "Content-Type": "application/json"
-            }
+            },
         });
         const data = await response.json();
+        console.log(data);
         return Response.json(data, { status: response.status });
     } catch (error) {
         console.log(error)
