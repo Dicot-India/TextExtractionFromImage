@@ -35,6 +35,24 @@ export default function QRCodeScanner() {
         };
     }, []);
 
+    const handleSubmit = async () => {
+        if (!qrResult) return;
+        try {
+            const response = await fetch('/api/submitdetails', {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(qrResult)
+            });
+            if (response.ok) {
+                console.log("Data submitted successfully");
+            } else {
+                console.error("Failed to submit data");
+            }
+        } catch (error) {
+            console.error("Error submitting data:", error);
+        }
+    };
+
     return (
         <div className="flex flex-col items-center justify-center p-4">
             <h2 className="text-xl font-bold mb-4">Scan QR Code</h2>
@@ -45,6 +63,11 @@ export default function QRCodeScanner() {
                     <pre className="bg-gray-100 p-2 rounded-md overflow-x-auto text-sm">
                         {JSON.stringify(qrResult, null, 2)}
                     </pre>
+                    <button
+                        onClick={handleSubmit}
+                        className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                        Submit Data
+                    </button>
                 </div>
             )}
         </div>
