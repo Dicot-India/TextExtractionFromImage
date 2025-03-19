@@ -22,6 +22,7 @@ export default function Home() {
   const [canvasSize, setCanvasSize] = useState({ width: 700, height: 500 });
   const [qrData, setQrData] = useState(null); // State to store QR code data
   const [csvData, setCsvData] = useState([]);
+  const [isFound , setIsFound] = useState(false);
   const contentRef = useRef();
 
   const CANVAS_WIDTH = 700;
@@ -201,12 +202,14 @@ export default function Home() {
 
         if (data?.part_id) {
 
-
           console.log("csvData:", csvData);
           console.log("data?.part_id:", data?.part_id);
           const foundPartID = csvData.find((id) => id === data?.part_id);
-          console.log("foundPartID:", foundPartID);
-          if (foundPartID) {
+          if(foundPartID){
+            setIsFound(true);
+          }
+
+          if (data?.part_id) {
             setPartID(data?.part_id);
           }
 
@@ -339,7 +342,7 @@ export default function Home() {
           Extract Text
         </button>
 
-        {isUniteGroup && (<p style={{ fontSize: "1.5rem", color: `${partID ? "green" : "red"}`, margin: "1rem 0" }} >{partID ? `PartID Recognize : ${partID}` : `PartID Not Recognize : ${partID}`}</p>)}
+        {isUniteGroup && (<p style={{ fontSize: "1.5rem", color: `${isFound ? "green" : "red"}`, margin: "1rem 0" }} >{isFound ? `PartID Recognize : ${partID}` : `PartID Not Recognize : ${partID}`}</p>)}
 
         {isUniteGroup && partID && (
           <>
