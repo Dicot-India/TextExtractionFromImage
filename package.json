@@ -11,11 +11,13 @@
   "dependencies": {
     "csv-parse": "^5.6.0",
     "formidable": "^3.5.2",
+    "html5-qrcode": "^2.3.8",
     "next": "15.1.7",
     "qrcode.react": "^4.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-to-print": "^3.0.5"
+    "react-to-print": "^3.0.5",
+    "webrtc-adapter": "^9.0.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
